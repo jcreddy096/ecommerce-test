@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -6,8 +5,16 @@ import axios from "axios";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
-  Container, Card, CardContent, CardMedia, Typography, Button, Pagination,
-  Box, Toolbar, IconButton
+  Container,
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
+  Button,
+  Pagination,
+  Box,
+  Toolbar,
+  IconButton,
 } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
@@ -31,14 +38,14 @@ const ProductsPage = () => {
   useEffect(() => {
     const loggedInUser = localStorage.getItem("loggedInUser");
     if (!loggedInUser) {
-      router.push("/login"); 
+      router.push("/login");
       return;
     }
     setUser(loggedInUser);
   }, []);
 
   useEffect(() => {
-    if (!user) return; 
+    if (!user) return;
 
     axios.get(PRODUCTS_API).then((res) => {
       const apiProducts: Product[] = res.data.map((p: Product) => ({
@@ -49,19 +56,19 @@ const ProductsPage = () => {
       const storedProducts: Product[] = JSON.parse(localStorage.getItem("customProducts") || "[]").map((p: Product) => ({
         ...p,
         price: Number(p.price) || 0,
-        isCustom: true, 
+        isCustom: true,
       }));
 
       const mergedProducts: Product[] = [
         ...apiProducts,
-        ...storedProducts.filter((p: Product) => !apiProducts.some((apiP: Product) => apiP.id === p.id))
+        ...storedProducts.filter((p: Product) => !apiProducts.some((apiP: Product) => apiP.id === p.id)),
       ];
 
       setProducts(mergedProducts);
 
       const storedStock = JSON.parse(localStorage.getItem(`stock_${user}`) || "{}");
       const initialStock = mergedProducts.reduce((acc, p) => {
-        acc[p.id] = storedStock[p.id] !== undefined ? storedStock[p.id] : (p.isCustom ? p.Stock || 10 : 10);
+        acc[p.id] = storedStock[p.id] !== undefined ? storedStock[p.id] : p.isCustom ? p.stock || 10 : 10;
         return acc;
       }, {} as Record<number, number>);
 
@@ -86,14 +93,12 @@ const ProductsPage = () => {
   }, [cart, user]);
 
   const handleAddToCart = (product: Product) => {
-    if (stock[product.id] <= 0) return; 
+    if (stock[product.id] <= 0) return;
 
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.id === product.id);
       const updatedCart = existingItem
-        ? prevCart.map((item) =>
-            item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-          )
+        ? prevCart.map((item) => (item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item))
         : [...prevCart, { ...product, quantity: 1 }];
 
       return updatedCart;
@@ -101,7 +106,7 @@ const ProductsPage = () => {
 
     setStock((prevStock) => ({
       ...prevStock,
-      [product.id]: prevStock[product.id] - 1
+      [product.id]: prevStock[product.id] - 1,
     }));
   };
 
@@ -115,7 +120,7 @@ const ProductsPage = () => {
 
     setStock((prevStock) => ({
       ...prevStock,
-      [productId]: prevStock[productId] + 1
+      [productId]: prevStock[productId] + 1,
     }));
   };
 
@@ -130,24 +135,29 @@ const ProductsPage = () => {
 
   return (
     <Box>
-     
       <Box sx={{ width: "100vw", bgcolor: "white", borderBottom: "1px solid #ddd" }}>
         <Container maxWidth="xl">
           <Toolbar sx={{ display: "flex", justifyContent: "space-between", py: 2 }}>
-            <Typography variant="h5" fontWeight="bold">Products</Typography>
+            <Typography variant="h5" fontWeight="bold">
+              Products
+            </Typography>
 
             <Box display="flex" gap={2}>
               <Button component={Link} href="/products/add-product" variant="contained" color="primary">
                 Add Product
               </Button>
 
-              <Button component={Link} href="/products/cart" variant="contained" color="secondary" startIcon={<ShoppingCartIcon />}>
+              <Button
+                component={Link}
+                href="/products/cart"
+                variant="contained"
+                color="secondary"
+                startIcon={<ShoppingCartIcon />}
+              >
                 Cart ({cart.reduce((acc, item) => acc + item.quantity, 0)})
               </Button>
 
-              <Button onClick={() => localStorage.removeItem("loggedInUser") || router.push("/login")}>
-                Logout
-              </Button>
+              <Button onClick={() => localStorage.removeItem("loggedInUser") || router.push("/login")}>Logout</Button>
             </Box>
           </Toolbar>
         </Container>
@@ -159,32 +169,39 @@ const ProductsPage = () => {
             <Card key={product.id} sx={{ p: 2, borderRadius: 10 }}>
               <CardMedia component="img" image={product.image} alt={product.title} sx={{ height: 200, objectFit: "contain" }} />
               <CardContent>
-                <Typography variant="h6" textAlign="center">{product.title}</Typography>
-                <Typography variant="body1" textAlign="center">MRP: ${Number(product.price).toFixed(2)}</Typography>
+                <Typography variant="h6" textAlign="center">
+                  {product.title}
+                </Typography>
+                <Typography variant="body1" textAlign="center">
+                  MRP: ${Number(product.price).toFixed(2)}
+                </Typography>
 
                 {product.isCustom && (
-                  <Button 
-                    fullWidth 
-                    variant="outlined" 
-                    color="primary" 
-                    sx={{ mt: 1 }} 
-                    component={Link} 
+                  <Button
+                    fullWidth
+                    variant="outlined"
+                    color="primary"
+                    sx={{ mt: 1 }}
+                    component={Link}
                     href={`/products/edit-product?id=${product.id}`}
                   >
                     Edit
                   </Button>
                 )}
 
-               
                 {getProductQuantity(product.id) === 0 ? (
                   <Button fullWidth variant="contained" color="primary" onClick={() => handleAddToCart(product)} sx={{ mt: 1 }}>
                     Add to Cart
                   </Button>
                 ) : (
                   <Box display="flex" justifyContent="center" alignItems="center" sx={{ mt: 1 }}>
-                    <IconButton onClick={() => handleRemoveFromCart(product.id)}><RemoveIcon /></IconButton>
+                    <IconButton onClick={() => handleRemoveFromCart(product.id)}>
+                      <RemoveIcon />
+                    </IconButton>
                     <Typography sx={{ mx: 2 }}>{getProductQuantity(product.id)}</Typography>
-                    <IconButton onClick={() => handleAddToCart(product)} disabled={stock[product.id] <= 0}><AddIcon /></IconButton>
+                    <IconButton onClick={() => handleAddToCart(product)} disabled={stock[product.id] <= 0}>
+                      <AddIcon />
+                    </IconButton>
                   </Box>
                 )}
               </CardContent>
