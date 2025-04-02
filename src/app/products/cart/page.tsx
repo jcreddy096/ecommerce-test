@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -113,9 +114,6 @@ const CartPage = () => {
         setCartItems(updatedCart);
         localStorage.setItem(`cart_${email}`, JSON.stringify(updatedCart));
 
-        const previousCart = JSON.parse(localStorage.getItem(`previousCart_${email}`) || "[]");
-        localStorage.setItem(`previousCart_${email}`, JSON.stringify(updatedCart));
-
         if (updatedInfo) {
           setProductUpdateInfo(updatedInfo);
           setShowProductAlert(true);
@@ -205,7 +203,7 @@ const CartPage = () => {
           </Typography>
 
           <Button variant="contained" color="primary" sx={{ mt: 2, display: "block", mx: "auto" }} onClick={() => router.push("/products/orders")}>
-            placed Orders
+            Placed Orders
           </Button>
         </Box>
       ) : (
