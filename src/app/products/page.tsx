@@ -157,7 +157,15 @@ const ProductsPage = () => {
                 Cart ({cart.reduce((acc, item) => acc + item.quantity, 0)})
               </Button>
 
-              <Button onClick={() => localStorage.removeItem("loggedInUser") || router.push("/login")}>Logout</Button>
+              <Button
+  onClick={() => {
+    localStorage.removeItem("loggedInUser");
+    router.push("/login");
+  }}
+>
+  Logout
+</Button>
+
             </Box>
           </Toolbar>
         </Container>
