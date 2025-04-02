@@ -34,6 +34,7 @@ const ProductsPage = () => {
   const searchParams = useSearchParams();
   const currentPage = Number(searchParams.get("page")) || 1;
   const [user, setUser] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
   useEffect(() => {
     const loggedInUser = localStorage.getItem("loggedInUser");
@@ -42,6 +43,7 @@ const ProductsPage = () => {
       return;
     }
     setUser(loggedInUser);
+    setIsAdmin(loggedInUser.toLowerCase().includes("admin"))
   }, []);
 
   useEffect(() => {
@@ -135,7 +137,7 @@ const ProductsPage = () => {
 
   return (
     <Box>
-      <Box sx={{ width: "100vw", bgcolor: "white", borderBottom: "1px solid #ddd" }}>
+      <Box sx={{ width: "100vw", bgcolor: "white", borderBottom: "1px solid #ddd", position: "sticky", top: 0, zIndex: 1000 }}>
         <Container maxWidth="xl">
           <Toolbar sx={{ display: "flex", justifyContent: "space-between", py: 2 }}>
             <Typography variant="h5" fontWeight="bold">
@@ -143,9 +145,12 @@ const ProductsPage = () => {
             </Typography>
 
             <Box display="flex" gap={2}>
+              {isAdmin && (
+                
               <Button component={Link} href="/products/add-product" variant="contained" color="primary">
                 Add Product
               </Button>
+              )}
 
               <Button
                 component={Link}
@@ -184,7 +189,7 @@ const ProductsPage = () => {
                   MRP: ${Number(product.price).toFixed(2)}
                 </Typography>
 
-                {product.isCustom && (
+                {isAdmin && product.isCustom && (
                   <Button
                     fullWidth
                     variant="outlined"
