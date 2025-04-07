@@ -7,7 +7,7 @@ import { useGlobalContext } from '@/context/GlobalContext';
 import AuthGuard from '@/guards/AuthGuard';
 import { ICartProduct, IProduct } from '@/types/product';
 import { getStorageProducts } from '@/utils/cart';
-import { Box, Grid, Typography, Button } from '@mui/material';
+import { Box, Typography, Button } from '@mui/material';
 import CartPriceAlert from '@/components/CartPriceAlert';
 import CartCard from '@/components/CartCard';
 
@@ -133,7 +133,7 @@ const CartPage = () => {
           </Typography>
         ) : (
           <>
-            <Grid container spacing={3}>
+            {/* <Grid container spacing={3}>
               {cartItems.map((item) => (
                 <Grid item xs={12} key={item.id.toString()}>
                   <CartCard
@@ -143,7 +143,25 @@ const CartPage = () => {
                   />
                 </Grid>
               ))}
-            </Grid>
+            </Grid> */}
+
+<Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 3, 
+              }}
+            >
+              {cartItems.map((item) => (
+                <Box key={item.id.toString()}>
+                  <CartCard
+                    item={item}
+                    product={productMap[item.id]}
+                    updateQuantity={updateQuantity}
+                  />
+                </Box>
+              ))}
+              </Box>
 
             <Box sx={{ mt: 4, textAlign: 'right' }}>
               <Typography variant="h5">
