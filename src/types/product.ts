@@ -1,5 +1,5 @@
 export type IProduct = {
-    id: number;
+    id: string;
     image: string;
     title: string;
     stock: number;
@@ -7,7 +7,7 @@ export type IProduct = {
   };
   
   export type ICartProduct = {
-    id: number;
+    id: string;
     title: string;
     price: number;
     quantity: number;
