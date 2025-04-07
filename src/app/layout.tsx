@@ -1,28 +1,4 @@
 
-// 'use client';
-
-// import './globals.css';
-// import { CartProvider } from '../context/GlobalContext'; 
-// import Header from '@/components/Header'; 
-
-// export default function RootLayout({
-//   children,
-// }: {
-//   children: React.ReactNode;
-// }) {
-//   return (
-//     <html lang="en">
-//       <body>
-//         <CartProvider>
-//           <Header />
-//           <main className="container">{children}</main>
-//         </CartProvider>
-//       </body>
-//     </html>
-//   );
-// }
-
-
 
 'use client';
 

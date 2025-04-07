@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -11,7 +10,6 @@ import {
   Card,
   CardMedia,
   CardContent,
-  CardActions,
 } from '@mui/material';
 import { ICartProduct, IProduct } from '@/types/product';
 import { IUserCartMap } from '@/types/cart';
@@ -82,56 +80,54 @@ const OrdersPage = () => {
             <Box
               sx={{
                 display: 'flex',
-                flexWrap: 'wrap',
-                gap: 3,
-                justifyContent: 'center',
+                flexDirection: 'column',
+                gap: 2,
               }}
             >
               {syncedCart.map((item) => (
-                <Box
+                <Card
                   key={item.id}
                   sx={{
-                    width: {
-                      xs: '100%',
-                      sm: '48%',
-                      md: '31%',
-                      lg: '23%',
-                    },
-                    flexGrow: 1,
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    border: '1px solid #ddd',
+                    borderRadius: 2,
+                    p: 2,
+                    gap: 2,
+                    backgroundColor: '#fff',
                   }}
                 >
-                  <Card
+                  
+                  <CardMedia
+                    component="img"
+                    image={item.image}
+                    alt={item.title}
                     sx={{
-                      height: '100%',
-                      display: 'flex',
-                      flexDirection: 'column',
+                      width: 100,
+                      height: 100,
+                      objectFit: 'contain',
+                      borderRadius: 1,
+                      backgroundColor: '#f5f5f5',
                     }}
-                  >
-                    <CardMedia
-                      component="img"
-                      height="160"
-                      image={item.image}
-                      alt={item.title}
-                      sx={{ objectFit: 'cover' }}
-                    />
-                    <CardContent sx={{ flexGrow: 1 }}>
-                      <Typography variant="subtitle1" gutterBottom>
-                        {item.title}
-                      </Typography>
-                      <Typography variant="body2">
-                        Quantity: {item.quantity}
-                      </Typography>
-                      <Typography variant="body2">
-                        Unit Price: ${item.price}
-                      </Typography>
-                    </CardContent>
-                    <CardActions sx={{ px: 2, pb: 2 }}>
-                      <Typography variant="body2" fontWeight="bold">
-                        Total: ${(item.price * item.quantity).toFixed(2)}
-                      </Typography>
-                    </CardActions>
-                  </Card>
-                </Box>
+                  />
+
+                  
+                  <CardContent sx={{ flex: 1, padding: '0 !important' }}>
+                    <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
+                      {item.title}
+                    </Typography>
+                    <Typography variant="body2">
+                      Quantity: {item.quantity}
+                    </Typography>
+                    <Typography variant="body2">
+                      Unit Price: ${item.price}
+                    </Typography>
+                    <Typography variant="body2" fontWeight="bold" mt={1}>
+                      Total: ${(item.price * item.quantity).toFixed(2)}
+                    </Typography>
+                  </CardContent>
+                </Card>
               ))}
             </Box>
           </Box>
