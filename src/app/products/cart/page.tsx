@@ -133,19 +133,9 @@ const CartPage = () => {
           </Typography>
         ) : (
           <>
-            {/* <Grid container spacing={3}>
-              {cartItems.map((item) => (
-                <Grid item xs={12} key={item.id.toString()}>
-                  <CartCard
-                    item={item}
-                    product={productMap[item.id]}
-                    updateQuantity={updateQuantity}
-                  />
-                </Grid>
-              ))}
-            </Grid> */}
+           
 
-<Box
+            <Box
               sx={{
                 display: 'flex',
                 flexDirection: 'column',

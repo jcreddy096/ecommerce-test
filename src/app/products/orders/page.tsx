@@ -1,3 +1,5 @@
+
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -10,7 +12,6 @@ import {
   CardMedia,
   CardContent,
   CardActions,
-  Grid,
 } from '@mui/material';
 import { ICartProduct, IProduct } from '@/types/product';
 import { IUserCartMap } from '@/types/cart';
@@ -78,10 +79,34 @@ const OrdersPage = () => {
                 .toFixed(2)}
             </Typography>
 
-            <Grid container spacing={3}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: 3,
+                justifyContent: 'center',
+              }}
+            >
               {syncedCart.map((item) => (
-                <Grid item xs={12} sm={6} md={4} lg={3} key={item.id}>
-                  <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                <Box
+                  key={item.id}
+                  sx={{
+                    width: {
+                      xs: '100%',
+                      sm: '48%',
+                      md: '31%',
+                      lg: '23%',
+                    },
+                    flexGrow: 1,
+                  }}
+                >
+                  <Card
+                    sx={{
+                      height: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                    }}
+                  >
                     <CardMedia
                       component="img"
                       height="160"
@@ -93,8 +118,12 @@ const OrdersPage = () => {
                       <Typography variant="subtitle1" gutterBottom>
                         {item.title}
                       </Typography>
-                      <Typography variant="body2">Quantity: {item.quantity}</Typography>
-                      <Typography variant="body2">Unit Price: ${item.price}</Typography>
+                      <Typography variant="body2">
+                        Quantity: {item.quantity}
+                      </Typography>
+                      <Typography variant="body2">
+                        Unit Price: ${item.price}
+                      </Typography>
                     </CardContent>
                     <CardActions sx={{ px: 2, pb: 2 }}>
                       <Typography variant="body2" fontWeight="bold">
@@ -102,9 +131,9 @@ const OrdersPage = () => {
                       </Typography>
                     </CardActions>
                   </Card>
-                </Grid>
+                </Box>
               ))}
-            </Grid>
+            </Box>
           </Box>
         )}
       </Box>
@@ -112,4 +141,4 @@ const OrdersPage = () => {
   );
 };
 
-export default  OrdersPage;
+export default OrdersPage;
