@@ -96,7 +96,7 @@ const ProductCard = ({ product, isAdmin = false }: Props) => {
         {isAdmin && (
           <Button
             component={Link}
-            href={`/products/edit-product?id=${id}`}
+            href={`/products/edit-product/${product.id}`}
             size="small"
             sx={{
               position: 'absolute',

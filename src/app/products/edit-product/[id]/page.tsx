@@ -2,14 +2,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { Box, TextField, Button, Typography } from "@mui/material";
-import { IProduct } from "../../../types/product";
+import { IProduct } from "../../../../types/product";
 
-const EditProductPage =() => {
-  const searchParams = useSearchParams();
+const EditProductPage = () => {
   const router = useRouter();
-  const productId = searchParams.get("id");
+  const params = useParams();
+  const productId = params?.id as string;
 
   const [product, setProduct] = useState<IProduct | null>(null);
 
@@ -27,28 +27,25 @@ const EditProductPage =() => {
 
     const updatedProduct = { ...product, [key]: value };
     setProduct(updatedProduct);
-
     updateLocalStorage(updatedProduct);
   };
 
   const updateLocalStorage = (updatedProduct: IProduct) => {
-   
     const storedProducts: IProduct[] = JSON.parse(localStorage.getItem("products") || "[]");
-    const updatedProducts = storedProducts.map((p) => (p.id === updatedProduct.id ? updatedProduct : p));
+    const updatedProducts = storedProducts.map((p) =>
+      p.id === updatedProduct.id ? updatedProduct : p
+    );
     localStorage.setItem("products", JSON.stringify(updatedProducts));
 
-    
+    // Update all user carts with updated product price
     const users = Object.keys(localStorage).filter((key) => key.startsWith("cart_"));
-
     users.forEach((userCartKey) => {
       const storedCart: IProduct[] = JSON.parse(localStorage.getItem(userCartKey) || "[]");
-      const updatedCart = storedCart.map((item) => 
+      const updatedCart = storedCart.map((item) =>
         item.id === updatedProduct.id ? { ...item, price: updatedProduct.price } : item
       );
-
       localStorage.setItem(userCartKey, JSON.stringify(updatedCart));
     });
-
   };
 
   if (!product) {
@@ -91,4 +88,5 @@ const EditProductPage =() => {
     </Box>
   );
 };
-export default  EditProductPage;
+
+export default EditProductPage;
