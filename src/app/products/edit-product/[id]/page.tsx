@@ -37,7 +37,6 @@ const EditProductPage = () => {
     );
     localStorage.setItem("products", JSON.stringify(updatedProducts));
 
-    // Update all user carts with updated product price
     const users = Object.keys(localStorage).filter((key) => key.startsWith("cart_"));
     users.forEach((userCartKey) => {
       const storedCart: IProduct[] = JSON.parse(localStorage.getItem(userCartKey) || "[]");

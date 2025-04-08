@@ -24,32 +24,24 @@ const CartPage = () => {
   const [products, setProducts] = useState<IProduct[]>([]);
 
   const userCart = useMemo(() => {
-    const data = cartMap[user];
-    return data && typeof data === 'object' && !Array.isArray(data) ? data : {};
+    const data = cartMap.get(user);
+    return data instanceof Map ? data : new Map<string, ICartProduct>();
   }, [cartMap, user]);
 
-  const cartItems = useMemo(
-    () => Object.values(userCart).filter((item) => item && item.id),
-    [userCart]
-  );
+  const cartItems = useMemo(() => {
+    return Array.from(userCart.values()).filter((item) => item && item.id);
+  }, [userCart]);
 
-  const productMap = useMemo(
-    () =>
-      products.reduce((map, product) => {
-        map[product.id] = product;
-        return map;
-      }, {} as Record<string, IProduct>),
-    [products]
-  );
+  const productMap = useMemo(() => {
+    return new Map(products.map((product) => [product.id, product]));
+  }, [products]);
 
-  const totalPrice = useMemo(
-    () =>
-      cartItems.reduce((total, item) => {
-        const price = Number(item.price) || 0;
-        return total + price * item.quantity;
-      }, 0),
-    [cartItems]
-  );
+  const totalPrice = useMemo(() => {
+    return cartItems.reduce((total, item) => {
+      const price = Number(item.price) || 0;
+      return total + price * item.quantity;
+    }, 0);
+  }, [cartItems]);
 
   useEffect(() => {
     if (!user) return;
@@ -58,9 +50,11 @@ const CartPage = () => {
     setProducts(loadedProducts);
 
     const updates: UpdatedProductPair[] = [];
-    const updatedCart = loadedProducts.reduce((acc, product) => {
-      const cartItem = userCart[product.id];
-      if (!cartItem) return acc;
+    const updatedCart = new Map(userCart); // clone
+
+    for (const product of loadedProducts) {
+      const cartItem = userCart.get(product.id);
+      if (!cartItem) continue;
 
       const productPrice = Number(product.price) || 0;
       const cartPrice = Number(cartItem.price) || 0;
@@ -70,34 +64,39 @@ const CartPage = () => {
           old: cartItem,
           new: { ...product, price: productPrice },
         });
-        acc[product.id] = { ...cartItem, price: productPrice };
+        updatedCart.set(product.id, { ...cartItem, price: productPrice });
       } else {
-        acc[product.id] = cartItem;
+        updatedCart.set(product.id, cartItem);
       }
-      return acc;
-    }, { ...userCart });
+    }
 
     if (updates.length > 0) {
+      const updatedCartMap = new Map(cartMap);
+      updatedCartMap.set(user, updatedCart);
       handleCartMap(updatedCart);
       setPriceUpdates(updates);
       setShowPriceAlert(true);
     }
-  }, [user, handleCartMap, userCart]);
+  }, [user, handleCartMap, userCart, cartMap]);
 
   const updateQuantity = (id: string, operation: 'increment' | 'decrement') => {
-    const updatedCart = { ...userCart };
-    if (!updatedCart[id]) return;
+    const updatedCart = new Map(userCart);
+    const item = updatedCart.get(id);
+    const product = productMap.get(id);
 
-    const product = productMap[id];
-    const currentQuantity = updatedCart[id].quantity;
+    if (!item || !product) return;
+
+    const currentQuantity = item.quantity;
 
     if (operation === 'increment') {
-      if (product && currentQuantity >= product.stock) return;
-      updatedCart[id].quantity += 1;
+      if (currentQuantity >= product.stock) return;
+      updatedCart.set(id, { ...item, quantity: currentQuantity + 1 });
     } else {
-      updatedCart[id].quantity = Math.max(1, currentQuantity - 1);
+      updatedCart.set(id, { ...item, quantity: Math.max(1, currentQuantity - 1) });
     }
 
+    const updatedCartMap = new Map(cartMap);
+    updatedCartMap.set(user, updatedCart);
     handleCartMap(updatedCart);
   };
 
@@ -115,6 +114,7 @@ const CartPage = () => {
           <Button
             variant="contained"
             onClick={() => router.push('/products/orders')}
+            disabled = {cartItems.length === 0}
           >
             Proceed to Orders
           </Button>
@@ -133,25 +133,23 @@ const CartPage = () => {
           </Typography>
         ) : (
           <>
-           
-
             <Box
               sx={{
                 display: 'flex',
                 flexDirection: 'column',
-                gap: 3, 
+                gap: 3,
               }}
             >
               {cartItems.map((item) => (
                 <Box key={item.id.toString()}>
                   <CartCard
                     item={item}
-                    product={productMap[item.id]}
+                    product={productMap.get(item.id)}
                     updateQuantity={updateQuantity}
                   />
                 </Box>
               ))}
-              </Box>
+            </Box>
 
             <Box sx={{ mt: 4, textAlign: 'right' }}>
               <Typography variant="h5">

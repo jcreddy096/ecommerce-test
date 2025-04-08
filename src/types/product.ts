@@ -12,5 +12,6 @@ export type IProduct = {
     price: number;
     quantity: number;
     image: string;
+    stock: number;
   };
   

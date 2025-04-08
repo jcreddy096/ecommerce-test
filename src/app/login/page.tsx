@@ -15,7 +15,7 @@ const LoginPage = () => {
     if (user) {
       router.push('/');
     }
-  }, [user]);
+  }, [user, router]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
