@@ -7,11 +7,11 @@ import {
   CardContent,
   Typography,
   CardActions,
-  Button,
+  //Button,
   Box,
   Rating,
 } from '@mui/material';
-import { useRouter } from 'next/navigation';
+//import { useRouter } from 'next/navigation';
 
 
 type Props = {
@@ -22,11 +22,11 @@ type Props = {
 };
 
 const ProductCard = ({ product, showActions = true, fullWidth = false}: Props) => {
-    const router = useRouter();
+    //const router = useRouter();
 
-    const handleView = () => {
-        router.push(`/products/id/${product.id}`);
-    };
+    // const handleView = () => {
+    //     router.push(`/products/${product.id}`);
+    // };
 
 
   return (
@@ -69,11 +69,11 @@ const ProductCard = ({ product, showActions = true, fullWidth = false}: Props) =
      {showActions && (
       <CardActions sx={{ justifyContent: 'space-between', mt: -1 }}>
      
-     {! fullWidth && (
+     {/* {! fullWidth && (
         <Button size="small" variant="outlined" onClick = {handleView}>
             View
             </Button>
-     )}
+     )} */}
 
 
       </CardActions>
