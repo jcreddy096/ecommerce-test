@@ -24,10 +24,10 @@ const ProductDetailPage = async ({ params }: PageProps) => {
       minHeight="80vh"
     >
   
-  <ProductCard product={product} showActions={true} fullWidth={true} userId={0} />;
+  <ProductCard product={product} showActions={true} fullWidth={true} userId={0} />
   </Box>
   </AuthGuard>
-  )
+  );
 };
 
 export default ProductDetailPage;
