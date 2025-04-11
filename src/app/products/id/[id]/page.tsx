@@ -3,13 +3,17 @@ import ProductCard from '@/app/components/ProductCard';
 import { Box } from '@mui/material';
 import AuthGuard from '@/app/auth/AuthGuard';
 
-interface PageProps {
-  params: {
-    id: string;
-  };
+
+interface ProductPageParams {
+  id: string;
 }
 
-export default async function ProductDetailPage({ params }: PageProps) {
+interface ProductPageProps {
+  params: ProductPageParams;
+}
+
+export default async function ProductDetailPage({ params }: ProductPageProps) {
+  
   const id = Number(params.id);
   const product = await fetchProductById(id);
 
