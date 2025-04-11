@@ -3,13 +3,9 @@ import ProductCard from '@/app/components/ProductCard';
 import { Box } from '@mui/material';
 import AuthGuard from '@/app/auth/AuthGuard';
 
-type Props = {
-  params: {
-    id: string;
-  };
-};
 
-const ProductDetailPage = async ({ params }: Props) => {
+
+const ProductDetailPage = async ({ params }: { params: { id: string } }) => {
   const product = await fetchProductById(Number(params.id));
 
   return (
